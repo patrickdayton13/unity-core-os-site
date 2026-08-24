@@ -101,7 +101,7 @@ section{padding:clamp(66px,9.5vw,140px) 0;position:relative}
 .btn:hover .arw{transform:translateX(3px)}
 
 /* ============ NAV ============ */
-header.nav{position:sticky;top:0;z-index:70;background:color-mix(in srgb,var(--ground) 78%,transparent);backdrop-filter:saturate(150%) blur(16px);border-bottom:1px solid transparent;transition:border-color .25s ease}
+header.nav{position:sticky;top:0;z-index:70;background:color-mix(in srgb,var(--ground) 78%,transparent);-webkit-backdrop-filter:saturate(150%) blur(16px);backdrop-filter:saturate(150%) blur(16px);border-bottom:1px solid transparent;transition:border-color .25s ease}
 header.nav.scrolled{border-color:var(--line)}
 .nav-inner{max-width:var(--maxw);margin:0 auto;padding:15px 30px;display:flex;align-items:center;gap:30px}
 .brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.02em}
@@ -145,7 +145,7 @@ header.nav.scrolled{border-color:var(--line)}
   radial-gradient(720px 460px at 4% 108%,rgba(43,51,136,.28),transparent 60%),
   linear-gradient(178deg,#0e1330 0%,#0d1230 52%,#0a0e24 100%);
   color:#e7eaf6;padding:clamp(60px,8vw,110px) 0 0;overflow:hidden;position:relative}
-.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(72% 66% at 55% 16%,#000,transparent 82%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:52px 52px;-webkit-mask-image:radial-gradient(72% 66% at 55% 16%,#000,transparent 82%);mask-image:radial-gradient(72% 66% at 55% 16%,#000,transparent 82%);pointer-events:none}
 .hero .wrap{position:relative;z-index:2}
 .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:clamp(34px,5vw,68px);align-items:center;padding-bottom:clamp(60px,8vw,100px)}
 .hero-badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#bfc6ee;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);padding:7px 14px;border-radius:100px;margin-bottom:28px}
@@ -391,7 +391,8 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
 @media(max-width:940px){
   .hero-grid,.show-row,.sec-grid,.frag{grid-template-columns:1fr}
   .frag{gap:15px}
-  .frag .arrow{flex-direction:row;transform:rotate(90deg);margin:8px auto}
+  .frag .arrow{flex-direction:column;margin:4px auto}
+  .frag .arrow svg{transform:rotate(90deg)}
   .show-row.flip .show-copy{order:0}
   .ba-grid,.triptych,.feat-grid,.foot-grid{grid-template-columns:1fr}
   .triptych,.feat-grid{gap:16px}
@@ -420,7 +421,7 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
   <div class="nav-inner">
     <a href="#top" class="brand" aria-label="UnityCoreOS home">
       <svg viewBox="0 0 120 118" aria-hidden="true"><use href="#logo-mark"/></svg>
-      <span><span class="c1">Unity</span> <span class="c2">Core</span><sup>OS</sup></span>
+      <span><span class="c1">Unity</span><span class="c2">Core</span><sup>OS</sup></span>
     </a>
     <nav class="nav-links">
       <a href="#platform">Platform</a>
@@ -842,7 +843,7 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
       <div class="foot-brand">
         <div class="brand">
           <svg viewBox="0 0 120 118" width="33" height="33" aria-hidden="true"><use href="#logo-mark"/></svg>
-          <span><span class="c1">Unity</span> <span class="c2">Core</span><sup>OS</sup></span>
+          <span><span class="c1">Unity</span><span class="c2">Core</span><sup>OS</sup></span>
         </div>
         <p>The operating system for medical staffing. One platform connecting facilities, agencies, and providers on a single real-time data layer.</p>
       </div>
@@ -895,7 +896,8 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
 (function(){
   "use strict";
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  document.getElementById("yr").textContent = new Date().getFullYear();
+  var yrEl = document.getElementById("yr");
+  if (yrEl) yrEl.textContent = new Date().getFullYear();
 
   // nav shadow
   var nav = document.getElementById("nav");
