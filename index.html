@@ -1045,5 +1045,169 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
   var mapT; window.addEventListener("resize", function(){ clearTimeout(mapT); mapT=setTimeout(drawMap,150); }, {passive:true});
 })();
 </script>
+
+<!-- ============ REQUEST A DEMO MODAL ============ -->
+<style>
+  .demo-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;
+    padding:24px;background:rgba(10,11,18,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+  .demo-overlay.open{display:flex}
+  .demo-modal{width:100%;max-width:560px;max-height:calc(100vh - 48px);overflow:auto;background:var(--surface);
+    border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg);
+    padding:30px 30px 26px;position:relative}
+  .demo-modal h3{font-family:var(--display);font-size:24px;line-height:1.2;margin:0 0 6px;color:var(--ink)}
+  .demo-modal .demo-sub{color:var(--muted);font-size:14.5px;margin:0 0 20px}
+  .demo-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);
+    background:var(--surface-2);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1}
+  .demo-close:hover{color:var(--ink);border-color:var(--line-strong)}
+  .demo-field{margin-bottom:14px}
+  .demo-row{display:flex;gap:12px}
+  .demo-row .demo-field{flex:1}
+  .demo-field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:6px;letter-spacing:.01em}
+  .demo-field label .req{color:var(--indigo)}
+  .demo-field input,.demo-field select,.demo-field textarea{width:100%;box-sizing:border-box;font:inherit;font-size:14.5px;
+    color:var(--ink);background:var(--ground);border:1px solid var(--line-strong);border-radius:9px;padding:10px 12px;outline:none}
+  .demo-field textarea{resize:vertical;min-height:78px}
+  .demo-field input:focus,.demo-field select:focus,.demo-field textarea:focus{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-soft)}
+  .demo-hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+  .demo-submit{width:100%;margin-top:6px;border:none;border-radius:10px;cursor:pointer;font:inherit;font-weight:600;font-size:15px;
+    color:#fff;background:var(--indigo);padding:13px 16px}
+  .demo-submit:hover{background:var(--indigo-2)}
+  .demo-submit:disabled{opacity:.6;cursor:default}
+  .demo-note{text-align:center;color:var(--muted-2);font-size:12px;margin:12px 0 0}
+  .demo-msg{display:none;border-radius:9px;padding:11px 13px;font-size:13.5px;margin-bottom:16px}
+  .demo-msg.err{display:block;background:var(--purple-soft);color:var(--ink);border:1px solid var(--line)}
+  .demo-done{display:none;text-align:center;padding:16px 4px}
+  .demo-done .tick{width:54px;height:54px;border-radius:50%;background:var(--green-soft);color:var(--green);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px}
+  .demo-done h3{margin-bottom:8px}
+</style>
+<div class="demo-overlay" id="demoOverlay" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+  <div class="demo-modal">
+    <button class="demo-close" id="demoClose" type="button" aria-label="Close">&times;</button>
+    <div id="demoFormWrap">
+      <h3 id="demoTitle">Request a demo</h3>
+      <p class="demo-sub">Tell us a bit about your organization and we'll reach out to schedule a walkthrough tailored to you.</p>
+      <div class="demo-msg err" id="demoErr"></div>
+      <form id="demoForm" novalidate>
+        <div class="demo-row">
+          <div class="demo-field"><label for="df-first">First name</label><input id="df-first" name="first_name" autocomplete="given-name"></div>
+          <div class="demo-field"><label for="df-last">Last name</label><input id="df-last" name="last_name" autocomplete="family-name"></div>
+        </div>
+        <div class="demo-field"><label for="df-email">Work email <span class="req">*</span></label><input id="df-email" name="work_email" type="email" autocomplete="email" required></div>
+        <div class="demo-field"><label for="df-company">Organization <span class="req">*</span></label><input id="df-company" name="company" autocomplete="organization" required></div>
+        <div class="demo-row">
+          <div class="demo-field"><label for="df-type">Organization type <span class="req">*</span></label>
+            <select id="df-type" name="org_type" required>
+              <option value="">Select&hellip;</option>
+              <option value="client">Health system / Hospital</option>
+              <option value="agency">Staffing agency</option>
+            </select>
+          </div>
+          <div class="demo-field"><label for="df-size">Size</label>
+            <select id="df-size" name="org_size">
+              <option value="">Select&hellip;</option>
+              <option>1&ndash;50</option>
+              <option>51&ndash;200</option>
+              <option>201&ndash;1,000</option>
+              <option>1,000+</option>
+            </select>
+          </div>
+        </div>
+        <div class="demo-row">
+          <div class="demo-field"><label for="df-phone">Phone</label><input id="df-phone" name="phone" type="tel" autocomplete="tel"></div>
+          <div class="demo-field"><label for="df-web">Website</label><input id="df-web" name="website" autocomplete="url" placeholder="https://"></div>
+        </div>
+        <div class="demo-field"><label for="df-msg">Anything we should know?</label><textarea id="df-msg" name="message"></textarea></div>
+        <div class="demo-hp" aria-hidden="true"><label>Leave this blank<input tabindex="-1" autocomplete="off" name="hp"></label></div>
+        <button class="demo-submit" id="demoSubmit" type="submit">Request my demo</button>
+        <p class="demo-note">No account is created. We'll email you to set up a time.</p>
+      </form>
+    </div>
+    <div class="demo-done" id="demoDone">
+      <div class="tick">&#10003;</div>
+      <h3>Thanks &mdash; we've got it.</h3>
+      <p class="demo-sub">Our team will reach out shortly to schedule your walkthrough. Questions in the meantime? Email <a href="mailto:demos@unitycoreos.com">demos@unitycoreos.com</a>.</p>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  "use strict";
+  // Point at the environment the live site talks to. PROD by default.
+  var DEMO_ENDPOINT = "https://gc5a929f049c2d8-unitycoreosprod.adb.us-chicago-1.oraclecloudapps.com/ords/wksp_unityvms/demo/request";
+
+  var overlay = document.getElementById("demoOverlay");
+  var form    = document.getElementById("demoForm");
+  var errBox  = document.getElementById("demoErr");
+  var btn     = document.getElementById("demoSubmit");
+  var formWrap= document.getElementById("demoFormWrap");
+  var doneBox = document.getElementById("demoDone");
+  var lastFocus = null;
+
+  function openModal(){
+    lastFocus = document.activeElement;
+    formWrap.style.display = ""; doneBox.style.display = "none";
+    errBox.style.display = "none"; errBox.textContent = "";
+    overlay.classList.add("open");
+    document.body.style.overflow = "hidden";
+    var f = document.getElementById("df-first"); if (f) setTimeout(function(){ f.focus(); }, 30);
+  }
+  function closeModal(){
+    overlay.classList.remove("open");
+    document.body.style.overflow = "";
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  // Intercept every "Schedule a demo" CTA (the #contact anchors and the
+  // mailto fallback) so they open the modal instead of jumping/opening mail.
+  document.addEventListener("click", function(e){
+    var a = e.target.closest ? e.target.closest("a") : null;
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (href === "#contact" || href.indexOf("mailto:info@unitycoreos.com?subject=Unity") === 0){
+      e.preventDefault();
+      openModal();
+    }
+  });
+
+  document.getElementById("demoClose").addEventListener("click", closeModal);
+  overlay.addEventListener("click", function(e){ if (e.target === overlay) closeModal(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape" && overlay.classList.contains("open")) closeModal(); });
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    errBox.style.display = "none";
+    var fd = new FormData(form);
+    var payload = {};
+    fd.forEach(function(v, k){ payload[k] = (typeof v === "string") ? v.trim() : v; });
+
+    if (!payload.company || !payload.work_email || !payload.org_type){
+      errBox.textContent = "Please fill in your organization, work email, and organization type.";
+      errBox.style.display = "block"; return;
+    }
+
+    btn.disabled = true; var orig = btn.textContent; btn.textContent = "Sending…";
+    fetch(DEMO_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r){ return r.json().catch(function(){ return {}; }); })
+    .then(function(data){
+      if (data && data.status === "ok"){
+        formWrap.style.display = "none"; doneBox.style.display = "block";
+      } else {
+        errBox.textContent = (data && data.message) || "Something went wrong. Please email demos@unitycoreos.com.";
+        errBox.style.display = "block";
+      }
+    })
+    .catch(function(){
+      errBox.textContent = "We couldn't reach the server. Please email demos@unitycoreos.com.";
+      errBox.style.display = "block";
+    })
+    .finally(function(){ btn.disabled = false; btn.textContent = orig; });
+  });
+})();
+</script>
 </body>
 </html>
