@@ -1207,6 +1207,17 @@ footer{background:#0b0d18;color:#bdc2d8;padding:66px 0 34px}
     })
     .finally(function(){ btn.disabled = false; btn.textContent = orig; });
   });
+
+  // Deep link: a QR code / email link can open the form directly via
+  // unitycoreos.com/#demo (also #request-demo or ?demo=1).
+  function maybeAutoOpen(){
+    var h = (location.hash || "").toLowerCase();
+    if (h === "#demo" || h === "#request-demo" || /[?&]demo=1(?:&|$)/.test(location.search)){
+      openModal();
+    }
+  }
+  maybeAutoOpen();
+  window.addEventListener("hashchange", maybeAutoOpen);
 })();
 </script>
 </body>
